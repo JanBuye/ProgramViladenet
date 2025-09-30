@@ -1,0 +1,23 @@
+﻿@page
+@model Backend.Pages.MapAddressModel
+
+<h1>Map an Address</h1>
+
+<form method="post">
+    <fieldset>
+        <div>
+            <label for="address">Address:</label>
+            <input style="width: 300px" asp-for="Address" />
+            <input type="submit" value="Map It!" />
+        </div>
+    </fieldset>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.Address))
+{
+    <iframe width="400"
+            height="400"
+            src="https://www.google.com/maps?q=@Uri.EscapeDataString(Model.Address)&output=embed">
+    </iframe>
+}
+

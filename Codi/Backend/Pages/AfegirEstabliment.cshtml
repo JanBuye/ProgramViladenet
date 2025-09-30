@@ -1,0 +1,144 @@
+﻿@page
+@model Backend.Pages.AfegirEstablimentModel
+
+@{
+    ViewData["Title"] = "AfegirEstabliment";
+}
+
+<h1>AfegirEstabliment</h1>
+
+<h4>Establiment</h4>
+<hr />
+<form method="post">
+    <div class="row">
+        <div class="col-4">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Establiment.Nom" class="control-label"></label>
+                    <input asp-for="Establiment.Nom" class="form-control" />
+                    <span asp-validation-for="Establiment.Nom" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Establiment.Tipus" class="control-label"></label>
+                    <input asp-for="Establiment.Tipus" class="form-control" />
+                    <span asp-validation-for="Establiment.Tipus" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Establiment.Accesibilitat" class="control-label"></label>
+                    <input asp-for="Establiment.Accesibilitat" class="form-control" />
+                    <span asp-validation-for="Establiment.Accesibilitat" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label for="clientSelect">Client</label>
+                    <select id="clientSelect" name="clientId" class="form-control">
+                        @foreach (var client in Model.Clients)
+                        {
+                            <option value="@client.Id">@client.Nom @client.Cognom1</option>
+                        }
+                    </select>
+                </div>
+                
+                
+        </div>
+        <div class="col-4">
+
+            <h5>Ubicació</h5>
+
+            <div id="map" style="width:400px; height:400px;"></div>
+            
+        </div>
+        <div class="col-4">
+            <div class="form-group">
+                <label asp-for="Ubicacio.Direccio" class="control-label"></label>
+                <input asp-for="Ubicacio.Direccio" class="form-control" id="adreca" />
+                <span asp-validation-for="Ubicacio.Direccio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ubicacio.CodiPostal" class="control-label"></label>
+                <input asp-for="Ubicacio.CodiPostal" class="form-control" id="cp" />
+                <span asp-validation-for="Ubicacio.CodiPostal" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ubicacio.Poblacio" class="control-label"></label>
+                <input asp-for="Ubicacio.Poblacio" class="form-control" id="poblacio"/>
+                <span asp-validation-for="Ubicacio.Poblacio" class="text-danger"></span>
+            </div>
+            <h6>Cordenadas</h6>
+            <div class="form-group">
+                <label asp-for="Ubicacio.CordsX" class="control-label"></label>
+                <input asp-for="Ubicacio.CordsX" class="form-control" id="lng" />
+                <span asp-validation-for="Ubicacio.CordsX" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ubicacio.CordsY" class="control-label" ></label>
+                <input asp-for="Ubicacio.CordsY" class="form-control" id="lat" />
+                <span asp-validation-for="Ubicacio.CordsY" class="text-danger"></span>
+            </div>
+        </div>
+
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
+</form>
+        
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+<script>
+    function initMap() {
+        var center = { lat: 42.217556, lng: 2.842798 };
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 10,
+            center: center
+        });
+
+        var marker = new google.maps.Marker({
+            position: center,
+            map: map
+        });
+        
+        var geocoder = new google.maps.Geocoder();
+
+        map.addListener('click', function(event) {
+            var clickedLocation = event.latLng;
+            marker.setPosition(clickedLocation);
+
+            var lat = clickedLocation.lat();
+            var lng = clickedLocation.lng();
+            // Mostra coordenades als inputs
+            document.getElementById('lat').value = lat;
+            document.getElementById('lng').value = lng;
+
+            // Fa reverse geocoding per treure l'adreça
+            geocoder.geocode({ location: { lat: lat, lng: lng } }, function (results, status) {
+            if (status === "OK") {
+                if (results[0]) {
+                let address = results[0].formatted_address;
+                document.getElementById("adreca").value = address;
+
+                // Iterem pels components de l'adreça per treure CP i Població
+                let components = results[0].address_components;
+                for (let c of components) {
+                    if (c.types.includes("postal_code")) {
+                    document.getElementById("cp").value = c.long_name;
+                    }
+                    if (c.types.includes("locality")) {
+                    document.getElementById("poblacio").value = c.long_name;
+                    }
+                }
+                }
+            } else {
+                alert("Geocoder failed due to: " + status);
+            }
+            });
+        });
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCqEmXqSxZAJTnyZG-Fi7Xoq4KjjOBK1vI&callback=initMap" async defer></script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,48 @@
+﻿@page
+@model Backend.Pages.CrearEventModel
+
+@{
+    ViewData["Title"] = "CrearEvent";
+}
+
+<h1>CrearEvent</h1>
+
+<h4>Event</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Event.DiaInici" class="control-label"></label>
+                <input asp-for="Event.DiaInici" class="form-control" />
+                <span asp-validation-for="Event.DiaInici" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Event.DiaFi" class="control-label"></label>
+                <input asp-for="Event.DiaFi" class="form-control" />
+                <span asp-validation-for="Event.DiaFi" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Event.Tipus" class="control-label"></label>
+                <input asp-for="Event.Tipus" class="form-control" />
+                <span asp-validation-for="Event.Tipus" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Event.EstablimentId" class="control-label"></label>
+                <select asp-for="Event.EstablimentId" class ="form-control" asp-items="ViewBag.EstablimentId"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

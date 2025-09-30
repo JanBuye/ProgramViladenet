@@ -1,3 +1,7 @@
+using Backend.Data;
+using Backend.Models;
+using Microsoft.EntityFrameworkCore;
+
 namespace Backend
 {
     public class Program
@@ -8,6 +12,8 @@ namespace Backend
 
             // Add services to the container.
             builder.Services.AddRazorPages();
+            builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             var app = builder.Build();
 
@@ -28,6 +34,7 @@ namespace Backend
 
             app.MapRazorPages();
 
+          
             app.Run();
         }
     }
